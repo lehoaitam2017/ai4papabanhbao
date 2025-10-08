@@ -55,6 +55,52 @@
     .send { background: ${ACCENT}; color: #fff; }
     .stop { background: #f3f4f6; color: #111827; }
     .hint { font-size: 12px; color: #6b7280; padding: 6px 12px 0; }
+    /* 🔥 Mobile: extra large floating popup */
+    @media (max-width: 1768px) {
+      .launcher {
+        bottom: 20px;
+        ${POSITION === "left" ? "left: 20px;" : "right: 20px;"}
+        width: 70px;
+        height: 70px;
+      }
+    
+      .panel {
+        /* nearly full screen but still floating a little */
+        width: min(98vw, 640px);
+        height: min(92vh, 820px);
+        bottom: 8px;
+        ${POSITION === "left" ? "left: 1vw;" : "right: 1vw;"}
+        border-radius: 22px;
+        border: 1px solid rgba(0,0,0,.08);
+        box-shadow: 0 24px 100px rgba(0,0,0,.35);
+      }
+    
+      .head {
+        height: 60px;
+        padding: 0 20px;
+        font-size: 17px;
+      }
+    
+      .msgs {
+        font-size: 16px;
+        padding: 18px;
+      }
+    
+      textarea {
+        font-size: 16px;
+        min-height: 56px;
+      }
+    
+      .input {
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+      }
+    
+      .send, .stop {
+        padding: 12px 16px;
+        font-size: 15px;
+      }
+    }
   `;
     shadow.appendChild(style);
 
