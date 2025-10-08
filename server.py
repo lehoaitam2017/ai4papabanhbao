@@ -12,8 +12,8 @@ from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
-OPENAI_API_KEY = "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"
-VECTOR_STORE_ID = "vs_68bf40c6d4448191892c7ef2e74d9f2c"
+OPENAI_API_KEY = "OPENAI_API_KEY#Store locally"
+VECTOR_STORE_ID = "VECTOR_STORE_ID#Store locally"
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 app = FastAPI()
