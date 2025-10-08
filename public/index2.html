@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Papa Banh Bao</title>
+
+    <!-- Your site CSS -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Defer widget load so it doesn't block rendering -->
+    <script
+            src="/widget.js"
+            defer
+            data-widget-target="pbb-widget"
+            data-lang="en"
+            data-theme="light"
+            data-store="tukwila"
+            data-env="prod"
+    ></script>
+
+    <!-- Optional: performance hints -->
+    <link rel="preconnect" href="https://cdn.yourwidgetcdn.com" />
+    <link rel="dns-prefetch" href="https://cdn.yourwidgetcdn.com" />
+</head>
+<body>
+<header class="site-header">
+    <nav class="nav">
+        <a href="/" class="logo">Papa Banh Bao</a>
+        <ul class="menu">
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#order">Order Now</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main id="content">
+    <!-- Your hero/sections go here -->
+    <section id="hero">
+        <h1>Taste the Legacy of Vietnam</h1>
+        <p>America’s choice for the best Bánh Bao!</p>
+        <a href="#order" class="btn">View Menu</a>
+    </section>
+
+    <!-- 🔽 Widget mount point -->
+    <section id="order" aria-label="Online ordering">
+        <div id="pbb-widget">Loading…</div>
+        <noscript>Please enable JavaScript to order online.</noscript>
+    </section>
+
+    <!-- More site content… -->
+    <section id="menu">
+        <!-- your menu markup/images -->
+    </section>
+</main>
+
+<footer class="site-footer" id="contact">
+    <p>(425) 900-1111 • 904 Industry Dr #22 Tukwila, WA 98188</p>
+    <p>Hours: Mon–Sat 10–7 • Sun 11–6</p>
+</footer>
+
+<!-- Safe initialization if your widget exposes a global -->
+<script>
+    // If your widget.js expects an explicit init, do it here.
+    // Guard so this file works even if widget.js hasn't loaded yet.
+    (function initWhenReady() {
+        function go() {
+            try {
+                if (window.PBBWidget && typeof window.PBBWidget.init === "function") {
+                    window.PBBWidget.init({
+                        target: document.getElementById(
+                            document.currentScript?.previousElementSibling?.querySelector
+                                ? "pbb-widget"
+                                : "pbb-widget"
+                        ) || document.getElementById("pbb-widget"),
+                        lang: document.querySelector('script[src$="widget.js"]')?.dataset.lang || "en",
+                        theme: document.querySelector('script[src$="widget.js"]')?.dataset.theme || "light",
+                        store: document.querySelector('script[src$="widget.js"]')?.dataset.store || "tukwila",
+                        env: document.querySelector('script[src$="widget.js"]')?.dataset.env || "prod",
+                    });
+                }
+            } catch (e) {
+                console.error("PBBWidget init error:", e);
+            }
+        }
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            go();
+        } else {
+            document.addEventListener("DOMContentLoaded", go);
+        }
+    })();
+</script>
+</body>
+</html>

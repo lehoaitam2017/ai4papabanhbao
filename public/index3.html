@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>My RAG Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 20px; }
+        #chat { max-width: 800px; margin: 0 auto; }
+        .bubble { padding: 12px 14px; border-radius: 12px; margin: 8px 0; }
+        .me { background: #eef; align-self: flex-end; }
+        .ai { background: #f6f6f6; }
+        .row { display: flex; flex-direction: column; }
+        .citations { font-size: 12px; opacity: 0.75; margin-top: 6px; }
+        button { padding: 8px 14px; }
+        input, textarea { width: 100%; padding: 10px; }
+    </style>
+</head>
+<body>
+<div id="chat" class="row">
+    <h2>RAG Chat (OpenAI Responses Streaming)</h2>
+    <div id="messages" class="row"></div>
+    <form id="form">
+        <textarea id="prompt" rows="3" placeholder="Ask about your documents..." required></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+            <button type="submit">Send</button>
+            <button type="button" id="stop">Stop</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const $msgs = document.getElementById("messages");
+    const $form = document.getElementById("form");
+    const $prompt = document.getElementById("prompt");
+    const $stop = document.getElementById("stop");
+
+    let controller = null;
+    // Any stable random id is fine for your session—to tie conversation id server-side
+    let sessionId = localStorage.getItem("rag_session_id");
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem("rag_session_id", sessionId);
+    }
+
+    function addBubble(text, who = "ai") {
+        const div = document.createElement("div");
+        div.className = "bubble " + (who === "me" ? "me" : "ai");
+        div.textContent = text;
+        $msgs.appendChild(div);
+        return div;
+    }
+
+    function addCitations(cites) {
+        if (!cites?.length) return;
+        const div = document.createElement("div");
+        div.className = "citations";
+        div.textContent = "Citations: " + cites.map(c => c?.file?.filename || c?.url || "source").join(", ");
+        $msgs.appendChild(div);
+    }
+
+    $form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const text = $prompt.value.trim();
+        if (!text) return;
+
+        addBubble(text, "me");
+        const ai = addBubble("", "ai");
+        $prompt.value = "";
+
+        controller = new AbortController();
+
+        const resp = await fetch("/api/chat/stream", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userMessage: text, sessionId }),
+            signal: controller.signal,
+        });
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+
+        let running = true;
+        while (running) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            // SSE is "data: {json}\n\n" lines
+            const lines = chunk.split("\n\n").filter(Boolean);
+            for (const line of lines) {
+                if (!line.startsWith("data:")) continue;
+                const payload = JSON.parse(line.slice(5));
+                if (payload.type === "delta") {
+                    ai.textContent += payload.data;
+                } else if (payload.type === "citations") {
+                    addCitations(payload.data);
+                } else if (payload.type === "done") {
+                    running = false;
+                    break;
+                } else if (payload.type === "error") {
+                    ai.textContent += `\n[error] ${payload.data}`;
+                    running = false;
+                    break;
+                }
+            }
+        }
+    });
+
+    $stop.addEventListener("click", () => {
+        controller?.abort();
+    });
+</script>
+</body>
+</html>
