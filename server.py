@@ -12,10 +12,10 @@ from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
-OPENAI_API_KEY = "OPENAI_API_KEY#Store locally"
+CHIA_KHOA_VANG = "CHIA_KHOA_VANG#Store locally"
 VECTOR_STORE_ID = "VECTOR_STORE_ID#Store locally"
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+client = AsyncOpenAI(api_key=CHIA_KHOA_VANG)
 app = FastAPI()
 
 
