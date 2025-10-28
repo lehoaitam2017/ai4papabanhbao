@@ -45,6 +45,7 @@ async def stream_chat(user_message: str, session_id: str) -> AsyncGenerator[str,
                         "Avoid explaining internal processes or giving instructions to staff. "
                         "Focus on making the customer feel valued and appreciated. "
                         "If information is missing, respond warmly and offer reassurance or alternatives."
+                        "Respond in the same language as the user's question — if the user writes in Vietnamese, reply in Vietnamese."
                 )
             },
             {
