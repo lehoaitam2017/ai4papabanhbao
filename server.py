@@ -9,13 +9,13 @@ from openai import AsyncOpenAI
 from dotenv import load_dotenv
 from fastapi.staticfiles import StaticFiles
 
-
+print("Loaded .env file")
 load_dotenv()
 
-CHIA_KHOA_VANG = "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"
-VECTOR_STORE_ID = "vs_68bf40c6d4448191892c7ef2e74d9f2c"
+MISSING_KEY = os.getenv("MISSING_KEY")
+VECTOR_STORE_ID = os.getenv("VECTOR_STORE_ID")
 
-client = AsyncOpenAI(api_key=CHIA_KHOA_VANG)
+client = AsyncOpenAI(api_key=MISSING_KEY)
 app = FastAPI()
 
 

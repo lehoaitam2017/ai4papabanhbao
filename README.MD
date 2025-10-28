@@ -10,10 +10,14 @@ steps to make chatbot work
         ps -ef | grep uvicorn
         kill -9 <pid> <br>
    3.2) run following cmd <br>
-        sudo rm -rf /opt/ai4banhbao/.venv
+        cd /opt/ai4papabanhbao
+        sudo su
+        rm -rf .venv
         python3 -m venv .venv
         source .venv/bin/activate
+        (no sudo)
         pip install --upgrade pip
+        (no sudo)
         pip install fastapi uvicorn "openai>=1.100.0" python-dotenv
         deactivate
         sudo nohup .venv/bin/uvicorn server:app --host 0.0.0.0 --port 8787 >/var/log/rag.out 2>&1 & <br>
