@@ -12,8 +12,8 @@ from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
-CHIA_KHOA_VANG = "CHIA_KHOA_VANG#Store locally"
-VECTOR_STORE_ID = "VECTOR_STORE_ID#Store locally"
+CHIA_KHOA_VANG = "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"
+VECTOR_STORE_ID = "vs_68bf40c6d4448191892c7ef2e74d9f2c"
 
 client = AsyncOpenAI(api_key=CHIA_KHOA_VANG)
 app = FastAPI()
