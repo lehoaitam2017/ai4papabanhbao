@@ -341,12 +341,21 @@
         sendMessage(text);
     });
 
+    let isComposing = false;
+    ta.addEventListener("compositionstart", () => (isComposing = true));
+    ta.addEventListener("compositionend", () => (isComposing = false));
+    // console.log("Widget loaded");
     ta.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
+            // Nếu IME đang gõ tiếng Việt => KHÔNG gửi
+            // console.log("User pressed key:", e.key, "isComposing:", isComposing);
+            if (isComposing) return;
+
             e.preventDefault();
             const text = ta.value.trim();
             if (!text) return;
             ta.value = "";
+            // console.log("Sending message:", text);
             sendMessage(text);
         }
     });

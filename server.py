@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
-CHIA_KHOA_VANG = "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"
+CHIA_KHOA_VANG = "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"
 VECTOR_STORE_ID = "vs_68bf40c6d4448191892c7ef2e74d9f2c"
 
 client = AsyncOpenAI(api_key=CHIA_KHOA_VANG)
@@ -23,6 +23,10 @@ app = FastAPI()
 sessions = {}
 
 async def stream_chat(user_message: str, session_id: str) -> AsyncGenerator[str, None]:
+    if len(user_message.strip()) <= 2 and " " not in user_message.strip():
+        yield f"data: {json.dumps({'type':'delta','data':'🙂'})}\n\n"
+        yield f"data: {json.dumps({'type':'done'})}\n\n"
+        return
     # Reuse conversation id if exists
     conversation_id = sessions.get(session_id)
     # print("conversation_id:", conversation_id)
@@ -30,10 +34,18 @@ async def stream_chat(user_message: str, session_id: str) -> AsyncGenerator[str,
     async with client.responses.stream(
         model="gpt-4o-mini",
         conversation=conversation_id,
-        input=[
+        input = [
             {
                 "role": "system",
-                "content": "Answer ONLY using content retrieved via file_search. If nothing is found, search on papabanhbao.com. Do not include any 'Source:' or citations in your output."
+                "content": (
+                        "Answer ONLY using content retrieved via file_search. "
+                        "Do not include any 'Source:' or citations in your output. "
+                        "Speak directly to the customer in a friendly, natural, and caring tone — "
+                        "like a helpful shop owner or service representative. "
+                        "Avoid explaining internal processes or giving instructions to staff. "
+                        "Focus on making the customer feel valued and appreciated. "
+                        "If information is missing, respond warmly and offer reassurance or alternatives."
+                )
             },
             {
                 "role": "user",
